@@ -18,11 +18,11 @@ package cmd
 
 import (
 	"context"
+	"fmt"
+	"github.com/minio/minio-go/v6/pkg/set"
 	"net/http"
 	"strings"
 	"time"
-
-	"github.com/minio/minio-go/v6/pkg/set"
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/minio/minio/cmd/config/etcd/dns"
@@ -637,7 +637,8 @@ func (f bucketForwardingHandler) ServeHTTP(w http.ResponseWriter, r *http.Reques
 			if t := r.URL.Query().Get("token"); t != "" {
 				bucket, _ = urlPath2BucketObjectName(strings.TrimPrefix(r.URL.Path, minioReservedBucketPath+"/download"))
 			} else if getRequestAuthType(r) != authTypeJWT && !strings.HasPrefix(r.URL.Path, minioReservedBucketPath) {
-				bucket, _ = urlPath2BucketObjectName(r.URL.Path)
+				fmt.Println("URL path:", r.URL.Path)
+				bucket, _ = request2BucketObjectName(r)
 			}
 		}
 		if bucket == "" {
